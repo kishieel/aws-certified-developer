@@ -1,0 +1,16 @@
+# IDEs
+.vscode/
+.idea/
+
+# Secrets
+.secrets/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.log
+*.tfvars
+*.tfvars.json
+.terraformrc
+terraform.rc
