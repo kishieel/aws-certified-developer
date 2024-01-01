@@ -1,0 +1,9 @@
+{
+  "name": "place-order",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.130"
+  }
+}
