@@ -1,0 +1,22 @@
+# Table of Contents
+
+This subdirectory contains practical examples and detailed configurations for various AWS compute services. Use the links below to navigate to specific services and explore the provided examples:
+- [ ] [Elastic Compute Cloud (EC2)](./ec2)
+- [ ] [Elastic Beanstalk](./beanstalk)
+- [ ] [Lambda](./lambda)
+- [ ] [Lightsail](./lightsail)
+- [ ] [Auto Scaling](./ec2)
+- [ ] [Outpost Services](./outposts)
+- [ ] [Serverless Application Repository]()
+- [ ] [Wavelength]()
+- [ ] [Local Zones]()
+- [ ] [Image Builder]()
+- [ ] [BottleRocket]()
+- [ ] [ParallelCluster]()
+- [ ] [NICE DCV]()
+- [ ] [Elastic Fabric Adapter]()
+- [ ] [Nitro Enclaves]()
+- [ ] [App Runner]()
+- [ ] [NICE EnginFrame]()
+- [ ] [Batch]()
+- [ ] [SimSpace Weaver]()
