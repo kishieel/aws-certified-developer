@@ -13,6 +13,7 @@
 *.tfvars
 *.tfvars.json
 .terraformrc
+.terraform.lock.hcl
 terraform.rc
 
 # Node Modules
