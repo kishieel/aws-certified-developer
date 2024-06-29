@@ -16,5 +16,9 @@
 .terraform.lock.hcl
 terraform.rc
 
-# Node Modules
+# Node
 node_modules/
+dist/
+
+# Environtment
+.env
