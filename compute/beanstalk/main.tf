@@ -59,9 +59,48 @@ resource "aws_elastic_beanstalk_application" "default" {
   name = "Express"
 }
 
-resource "aws_iam_instance_profile" "beanstalk" {
-  name = "AWSElasticBeanstalkServiceRole"
-  role = "AWSElasticBeanstalkServiceRole"
+data "aws_iam_policy_document" "beanstalk_assume_role" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["elasticbeanstalk.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "elastic_beanstalk_service_role" {
+  name_prefix         = "AWSElasticBeanstalkServiceRole"
+  assume_role_policy  = data.aws_iam_policy_document.beanstalk_assume_role.json
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AWSElasticBeanstalkManagedUpdatesCustomerRolePolicy",
+    "arn:aws:iam::aws:policy/service-role/AWSElasticBeanstalkEnhancedHealth",
+  ]
+}
+
+data "aws_iam_policy_document" "ec2_assume_role" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "ec2_service_role" {
+  name_prefix         = "AWSElasticBeanstalkEC2ServiceRole"
+  assume_role_policy  = data.aws_iam_policy_document.ec2_assume_role.json
+  managed_policy_arns = [
+    "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier",
+  ]
+}
+
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name_prefix = "AWSElasticBeanstalkEC2InstanceProfile"
+  role        = aws_iam_role.ec2_service_role.name
 }
 
 resource "aws_elastic_beanstalk_environment" "default" {
@@ -70,11 +109,18 @@ resource "aws_elastic_beanstalk_environment" "default" {
   tier                = "WebServer"
   solution_stack_name = data.aws_elastic_beanstalk_solution_stack.nodejs.name
   cname_prefix        = "express-z010lb"
+  version_label       = "v1.0.0"
 
   setting {
-    namespace = "aws:autoscaling:launchconfiguration"
-    name      = "IamInstanceProfile"
-    value     = aws_iam_instance_profile.beanstalk.name
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "ServiceRole"
+    value     = aws_iam_role.elastic_beanstalk_service_role.arn
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "SingleInstance"
   }
 
   setting {
@@ -92,7 +138,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:environment:process:default"
     name      = "HealthCheckPath"
-    value     = "/health"
+    value     = "/"
   }
 
   setting {
@@ -105,6 +151,18 @@ resource "aws_elastic_beanstalk_environment" "default" {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = aws_subnet.public.id
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "EC2KeyName"
+    value     = var.aws_key_pair_name
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "IamInstanceProfile"
+    value     = aws_iam_instance_profile.ec2_instance_profile.name
   }
 }
 

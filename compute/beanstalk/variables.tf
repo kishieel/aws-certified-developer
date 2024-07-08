@@ -16,3 +16,7 @@ variable "aws_region" {
   description = "AWS Region"
   default = "eu-central-1"
 }
+
+variable "aws_key_pair_name" {
+  description = "AWS Key Pair Name"
+}

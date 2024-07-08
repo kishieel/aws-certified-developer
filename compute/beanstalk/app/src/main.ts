@@ -16,5 +16,4 @@ const host: string = config.HOST;
 const port: number = config.PORT;
 
 app.get('/', (req, res) => res.send('Hello World!'));
-app.get('/health', (req, res) => res.send('OK'));
 app.listen(port, host, () => console.log(`Server listening on http://${host}:${port}`));
